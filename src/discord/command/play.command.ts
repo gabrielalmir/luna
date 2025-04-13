@@ -1,6 +1,7 @@
 import { useMainPlayer } from "discord-player";
 import type { ChatInputCommandInteraction, GuildMember } from "discord.js";
 import { SlashCommandBuilder } from "discord.js";
+import { tryCatchAsync } from "resulta";
 import type { Command, CommandCreateCommand } from "./command";
 
 export class PlayCommand implements Command {
@@ -70,14 +71,16 @@ export class PlayCommand implements Command {
             },
         });
 
-        try {
+        const connection = await tryCatchAsync(async () => {
             if (!queue.connection) {
                 const guildMember = ctx.member as GuildMember;
                 await queue.connect(guildMember.voice.channel!);
             }
-        } catch {
+        });
+
+        if (!connection.ok) {
             queue.delete();
-            await ctx.followUp('Não foi possível entrar no canal de voz.');
+            await ctx.followUp('Não foi possível conectar ao canal de voz.');
             return;
         }
 

@@ -1,5 +1,4 @@
 import { Routes } from "discord.js";
-import { ok, tryCatchAsync } from "resulta";
 import { env } from "../config/env";
 import { rest } from "../lib/discord";
 import { CommandCache } from "./cache";
@@ -15,31 +14,24 @@ export class DiscordCommandManager {
         this.commands = new CommandRegistry(commandsList);
     }
 
-    public async deleteAllPreviousCommands() {
-        return await tryCatchAsync(async () => {
-            const cachedCommands = await this.cache.load();
+    public async deleteAllPreviousCommands(): Promise<void> {
+        const cachedCommands = await this.cache.load();
 
-            if (!cachedCommands.ok) {
-                await rest.put(Routes.applicationCommands(env.DISCORD_CLIENT_ID), { body: [] });
-            }
-
-            return ok(true);
-        });
+        if (!cachedCommands.ok) {
+            await rest.put(Routes.applicationCommands(env.DISCORD_CLIENT_ID), { body: [] });
+        }
     }
 
-    public async registerCommands() {
-        return await tryCatchAsync(async () => {
-            const cachedCommands = await this.cache.load();
-            if (cachedCommands.ok) return ok(cachedCommands.value);
+    public async registerCommands(): Promise<void> {
+        const cachedCommands = await this.cache.load();
+        if (cachedCommands.ok) return;
 
-            const serializedCommands = this.commands.serialize();
-            await rest.put(Routes.applicationCommands(env.DISCORD_CLIENT_ID), {
-                body: serializedCommands,
-            });
-
-            await this.cache.save(serializedCommands);
-            return ok(serializedCommands);
+        const serializedCommands = this.commands.serialize();
+        await rest.put(Routes.applicationCommands(env.DISCORD_CLIENT_ID), {
+            body: serializedCommands,
         });
+
+        await this.cache.save(serializedCommands);
     }
 
     public getCommand(name: string): Command | undefined {

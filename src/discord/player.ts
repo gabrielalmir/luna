@@ -2,12 +2,15 @@ import { DefaultExtractors } from "@discord-player/extractor";
 import type { Player } from "discord-player";
 
 export class DiscordPlayer {
-    constructor(private readonly player: Player) { }
+    private readonly player: Player;
 
-    configure(): this {
+    constructor(player: Player) {
+        this.player = player;
+    }
+
+    configure(): void {
         this.loadExtractors();
         this.registerEventHandlers();
-        return this;
     }
 
     private loadExtractors(): void {

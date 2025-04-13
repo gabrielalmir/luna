@@ -5,66 +5,28 @@ import { tryCatchAsync } from "resulta";
 import type { Command, CommandCreateCommand } from "./command";
 
 export class PlayCommand implements Command {
-    name: string;
-    description: string;
+    private readonly name: string;
+    private readonly description: string;
 
     constructor(props: CommandCreateCommand) {
         this.name = props.name;
         this.description = props.description;
     }
 
-    toDiscordCommand() {
-        return new SlashCommandBuilder()
-            .setName(this.name)
-            .setDescription(this.description)
-            .addStringOption(option =>
-                option
-                    .setName('query')
-                    .setDescription('URL ou termo de busca do YouTube')
-                    .setRequired(true)
-            )
-            .toJSON();
-    }
-
-    async execute(ctx: ChatInputCommandInteraction) {
-        await ctx.deferReply();
-
-        const guild = ctx.guild;
-        if (!guild) {
-            await ctx.followUp('Este comando só pode ser usado em servidores.');
-            return;
-        }
-
-        const member = guild.members.cache.get(ctx.user.id);
-        if (!member) {
-            await ctx.followUp('Você não está em um servidor.');
-            return;
-        }
-
-        const channel = member.voice.channel;
-        if (!channel) {
-            await ctx.followUp('Você precisa estar em um canal de voz para usar este comando.');
-            return;
-        }
-
+    async execute(ctx: ChatInputCommandInteraction): Promise<void> {
         const player = useMainPlayer();
-        const query = ctx.options.getString('query');
-
-        if (!query) {
-            await ctx.followUp('Por favor, forneça uma URL ou termo de busca.');
-            return;
-        }
+        const query = ctx.options.getString("query", true);
 
         const searchResult = await player.search(query, {
             requestedBy: ctx.user,
         });
 
         if (!searchResult || !searchResult.tracks.length) {
-            await ctx.followUp('Nenhum resultado encontrado para a busca.');
+            await ctx.reply("Nenhum resultado encontrado para a busca.");
             return;
         }
 
-        const track = searchResult.tracks[0]!;
+        const track = searchResult.tracks[0];
         const queue = player.nodes.create(ctx.guild!, {
             metadata: {
                 channel: ctx.channel,
@@ -80,13 +42,39 @@ export class PlayCommand implements Command {
 
         if (!connection.ok) {
             queue.delete();
-            await ctx.followUp('Não foi possível conectar ao canal de voz.');
+            await ctx.reply("Não foi possível conectar ao canal de voz.");
+            return;
+        }
+
+        if (!track) {
+            await ctx.reply("Nenhuma música encontrada.");
             return;
         }
 
         queue.addTrack(track);
         if (!queue.isPlaying()) await queue.play(track);
 
-        await ctx.followUp(`Adicionado à fila: **${track.title}**`);
+        await ctx.reply(`Adicionado à fila: **${track.title}**`);
+    }
+
+    toDiscordCommand() {
+        return new SlashCommandBuilder()
+            .setName(this.name)
+            .setDescription(this.description)
+            .addStringOption((option) =>
+                option
+                    .setName("query")
+                    .setDescription("URL ou termo de busca do YouTube")
+                    .setRequired(true)
+            )
+            .toJSON();
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    getDescription(): string {
+        return this.description;
     }
 }

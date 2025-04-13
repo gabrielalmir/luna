@@ -1,5 +1,6 @@
 import { useMainPlayer } from "discord-player";
 import { type CacheType, type Interaction } from "discord.js";
+import { tryCatchAsync } from "resulta";
 import { discordCommandManager } from "../config/deps";
 
 export default {
@@ -17,7 +18,14 @@ export default {
         console.log(`Executing command: ${ctx.commandName}`);
 
         await player.context.provide({ guild: ctx.guild! }, async () => {
-            await command.execute(ctx);
+            const executionOutcome = await tryCatchAsync(async () => {
+                await command.execute(ctx);
+            });
+
+            if (!executionOutcome.ok) {
+                console.error(`Error executing command ${ctx.commandName}:`, executionOutcome.error);
+                await ctx.reply("An error occurred while executing the command.");
+            }
         })
     }
 }

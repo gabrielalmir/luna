@@ -5,19 +5,17 @@ import clientReadyEvent from "./events/client-ready.event";
 import interactionCreateEvent from "./events/interaction-create.event";
 import { client } from "./lib/discord";
 
-async function main() {
+async function initializeBot(): Promise<void> {
     console.log("Deleting all previous commands...");
-    const commandsDeletionOutcome = await discordCommandManager.deleteAllPreviousCommands();
-
-    if (!commandsDeletionOutcome.ok) {
-        console.error("Failed to delete previous commands", commandsDeletionOutcome.error);
-        process.exit(1);
-    }
+    await discordCommandManager.deleteAllPreviousCommands();
 
     client.on(Events.ClientReady, clientReadyEvent.execute);
     client.on(Events.InteractionCreate, interactionCreateEvent.execute);
 
-    client.login(env.DISCORD_TOKEN);
+    await client.login(env.DISCORD_TOKEN);
 }
 
-main();
+initializeBot().catch((error) => {
+    console.error("Failed to initialize the bot", error);
+    process.exit(1);
+});

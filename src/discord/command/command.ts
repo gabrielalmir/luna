@@ -12,9 +12,6 @@ export interface CommandCreateCommand {
 }
 
 export interface Command {
-    name: string;
-    description: string;
-
     execute(ctx: any): Promise<void>;
     toDiscordCommand?(): any;
 }

@@ -14,7 +14,8 @@ Luna é um bot de música para Discord desenvolvido em TypeScript, utilizando a 
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [discord.js](https://discord.js.org/)
-- [Bun](https://bun.sh/) para execução e gerenciamento de dependências
+- [Node.js](https://nodejs.org/) para execução
+- [pnpm](https://pnpm.io/) para gerenciamento de dependências
 - [Zod](https://zod.dev/) para validação de variáveis de ambiente
 - [Resulta](https://www.npmjs.com/package/resulta) para manipulação de resultados
 
@@ -39,12 +40,12 @@ O projeto está em desenvolvimento ativo. Algumas funcionalidades ainda estão s
 
 3. Instale as dependências:
    ```bash
-   bun install
+   pnpm install
    ```
 
 4. Inicie o bot:
    ```bash
-   bun start
+   pnpm start
    ```
 
 ## Contribuição
@@ -54,4 +55,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar
 ---
 
 **Nota**: Este projeto está em fase inicial de desenvolvimento e pode sofrer alterações significativas.
-

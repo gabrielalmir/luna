@@ -1,3 +1,4 @@
+import { useMainPlayer } from "discord-player";
 import { type CacheType, type Interaction } from "discord.js";
 import { discordCommandManager } from "../config/deps";
 
@@ -6,6 +7,7 @@ export default {
         if (!ctx.isChatInputCommand()) return;
 
         const command = discordCommandManager.getCommand(ctx.commandName);
+        const player = useMainPlayer();
 
         if (!command) {
             console.error(`Command ${ctx.commandName} not found`);
@@ -13,6 +15,9 @@ export default {
         }
 
         console.log(`Executing command: ${ctx.commandName}`);
-        await command.execute(ctx);
+
+        await player.context.provide({ guild: ctx.guild! }, async () => {
+            await command.execute(ctx);
+        })
     }
 }

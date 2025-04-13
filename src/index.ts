@@ -5,10 +5,19 @@ import clientReadyEvent from "./events/client-ready.event";
 import interactionCreateEvent from "./events/interaction-create.event";
 import { client } from "./lib/discord";
 
-console.log("Deleting all previous commands...");
-await discordCommandManager.deleteAllPreviousCommands();
+async function main() {
+    console.log("Deleting all previous commands...");
+    const commandsDeletionOutcome = await discordCommandManager.deleteAllPreviousCommands();
 
-client.on(Events.ClientReady, clientReadyEvent.execute);
-client.on(Events.InteractionCreate, interactionCreateEvent.execute);
+    if (!commandsDeletionOutcome.ok) {
+        console.error("Failed to delete previous commands", commandsDeletionOutcome.error);
+        process.exit(1);
+    }
 
-client.login(env.DISCORD_TOKEN);
+    client.on(Events.ClientReady, clientReadyEvent.execute);
+    client.on(Events.InteractionCreate, interactionCreateEvent.execute);
+
+    client.login(env.DISCORD_TOKEN);
+}
+
+main();

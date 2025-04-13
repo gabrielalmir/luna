@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - '@discordjs/opus'
+  - esbuild
+
+ignoredBuiltDependencies:
+  - '@ffmpeg-installer/linux-x64'

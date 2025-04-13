@@ -1,12 +1,11 @@
 import type { ChatInputCommandInteraction } from "discord.js";
-import { Command, type CommandCreateCommand } from "./command";
+import type { Command, CommandCreateCommand } from "./command";
 
-export class HiCommand extends Command {
+export class HiCommand implements Command {
     name: string;
     description: string;
 
     constructor(props: CommandCreateCommand) {
-        super();
         this.name = props.name;
         this.description = props.description;
     }

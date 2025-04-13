@@ -1,21 +1,31 @@
 {
   "name": "luna",
-  "module": "index.ts",
-  "type": "module",
+  "module": "dist/index.js",
+  "type": "commonjs",
   "private": true,
   "scripts": {
-    "start": "bun src/index.ts",
-    "dev": "bun --watch src/index.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "@discord-player/extractor": "^7.1.0",
+    "@discord-player/ffmpeg": "^7.1.0",
+    "@discordjs/opus": "^0.10.0",
+    "@discordjs/voice": "^0.18.0",
+    "discord-player": "^7.1.0",
     "discord.js": "^14.18.0",
-    "resulta": "^1.0.2",
+    "dotenv": "^16.5.0",
+    "resulta": "^1.0.4",
     "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.27",
+    "@types/node": "^22.14.1",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.3"
   }
 }

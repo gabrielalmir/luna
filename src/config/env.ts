@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import z from 'zod';
 
 const envSchema = z.object({
@@ -5,4 +6,4 @@ const envSchema = z.object({
     DISCORD_CLIENT_ID: z.string(),
 });
 
-export const env = envSchema.parse(Bun.env);
+export const env = envSchema.parse(process.env);

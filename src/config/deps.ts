@@ -16,4 +16,7 @@ export const discordCommandManager = new DiscordCommandManager([
 ]);
 
 // player
-export const player = new DiscordPlayer(new Player(client)).configure().getPlayer();
+const discordPlayer = new DiscordPlayer(new Player(client));
+discordPlayer.configure();
+
+export const player = discordPlayer.getPlayer();

@@ -15,6 +15,18 @@ export class DiscordCommandManager {
         this.commands = new CommandRegistry(commandsList);
     }
 
+    public async deleteAllPreviousCommands() {
+        return await tryCatchAsync(async () => {
+            const cachedCommands = await this.cache.load();
+
+            if (!cachedCommands.ok) {
+                await rest.put(Routes.applicationCommands(env.DISCORD_CLIENT_ID), { body: [] });
+            }
+
+            return ok(true);
+        });
+    }
+
     public async registerCommands() {
         return await tryCatchAsync(async () => {
             const cachedCommands = await this.cache.load();

@@ -12,6 +12,7 @@ export default {
             return;
         }
 
+        console.log(`Executing command: ${ctx.commandName}`);
         await command.execute(ctx);
     }
 }

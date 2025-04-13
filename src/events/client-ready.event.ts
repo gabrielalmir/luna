@@ -3,7 +3,7 @@ import { discordCommandManager } from "../config/deps";
 
 export default {
     async execute(ctx: Client<true>) {
-        console.log(`Logged in as ${ctx.user.tag}`);
+        console.log(`Logged in as ${ctx.user.tag} (${ctx.user.id})`);
 
         const registeredCommands = await discordCommandManager.registerCommands();
 

@@ -5,7 +5,7 @@ import clientReadyEvent from "./events/client-ready.event";
 import interactionCreateEvent from "./events/interaction-create.event";
 import { client } from "./lib/discord";
 
-async function initializeBot(): Promise<void> {
+async function main() {
     console.log("Deleting all previous commands...");
     await discordCommandManager.deleteAllPreviousCommands();
 
@@ -15,7 +15,9 @@ async function initializeBot(): Promise<void> {
     await client.login(env.DISCORD_TOKEN);
 }
 
-initializeBot().catch((error) => {
-    console.error("Failed to initialize the bot", error);
-    process.exit(1);
-});
+main()
+    .then(() => console.log("Bot started successfully"))
+    .catch((error) => {
+        console.error("Failed to start the bot", error);
+        process.exit(1);
+    });

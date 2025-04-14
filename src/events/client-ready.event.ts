@@ -2,11 +2,12 @@ import { type Client } from "discord.js";
 import { tryCatchAsync } from "resulta";
 import { discordCommandManager } from "../config/deps";
 
-export default {
-    async execute(ctx: Client<true>) {
+export default class ClientReadyEvent {
+    public static async execute(ctx: Client<true>): Promise<void> {
         console.log(`Logged in as ${ctx.user.tag} (${ctx.user.id})`);
 
         const registeredCommands = await tryCatchAsync(async () => {
+            console.log("Registering commands...");
             await discordCommandManager.registerCommands();
         });
 
@@ -16,5 +17,5 @@ export default {
         }
 
         console.log("Commands registered successfully");
-    },
+    }
 }
